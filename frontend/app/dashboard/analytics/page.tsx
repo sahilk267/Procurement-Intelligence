@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { analyticsAPI } from '@/lib/api';
+import { SkeletonMetricCard } from '@/components/SkeletonLoaders';
 import {
   LineChart,
   Line,
@@ -89,8 +90,12 @@ export default function AnalyticsDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <SkeletonMetricCard key={i} />
+          ))}
+        </div>
       </div>
     );
   }

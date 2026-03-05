@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { analyticsAPI } from '@/lib/api';
 import { NotificationBell } from '@/components/NotificationBell';
+import { SkeletonMetricCard } from '@/components/SkeletonLoaders';
 import Link from 'next/link';
 
 interface Analytics {
@@ -111,8 +112,10 @@ export default function Dashboard() {
         )}
 
         {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <SkeletonMetricCard key={i} />
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
