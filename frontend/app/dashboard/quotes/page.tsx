@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { quotesAPI, ordersAPI } from '@/lib/api';
+import { SkeletonCard } from '@/components/SkeletonLoaders';
 
 interface Quote {
   id: string;
@@ -171,8 +172,10 @@ export default function QuotesPage() {
       )}
 
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="space-y-6">
+          {[...Array(3)].map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
         </div>
       ) : Object.keys(groupedQuotes).length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
@@ -183,7 +186,7 @@ export default function QuotesPage() {
           {Object.entries(groupedQuotes).map(([orderId, { order, quotes: orderQuotes }]) => (
             <div key={orderId} className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">{order.product_name}</h2>
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto -mx-6 px-6">
                 <table className="w-full text-sm">
                   <thead className="border-b">
                     <tr>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ordersAPI, vendorsAPI } from '@/lib/api';
+import { SkeletonTableRow } from '@/components/SkeletonLoaders';
 import { useSearchParams } from 'next/navigation';
 
 interface Order {
@@ -176,8 +177,23 @@ export default function OrdersPage() {
       )}
 
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Product</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Qty</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Date</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(5)].map((_, i) => (
+                <SkeletonTableRow key={i} />
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : orders.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">

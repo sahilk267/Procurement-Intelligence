@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { vendorsAPI } from '@/lib/api';
+import { SkeletonCard } from '@/components/SkeletonLoaders';
 import Link from 'next/link';
 
 interface Vendor {
@@ -177,15 +178,17 @@ export default function VendorsPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
         </div>
       ) : vendors.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <p className="text-gray-500 text-lg">No vendors found</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {vendors.map((vendor) => (
             <div key={vendor.id} className="bg-white rounded-lg shadow p-6 space-y-3">
               <div className="flex justify-between items-start">
