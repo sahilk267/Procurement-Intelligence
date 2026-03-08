@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
+from config import settings
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/procurement_db")
+DATABASE_URL = settings.DATABASE_URL
 
 # Allow SQLite overrides for testing without breaking Postgres configuration
 if DATABASE_URL.startswith("sqlite"):
@@ -13,6 +13,7 @@ else:
     
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# Declare Base once for entire project
 Base = declarative_base()
 
 def get_db():

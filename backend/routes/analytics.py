@@ -54,26 +54,37 @@ def get_lead_analytics(db: Session = Depends(get_db), current_user = Depends(get
 def get_vendor_rankings(db: Session = Depends(get_db)):
     """
     Returns vendors sorted dynamically by our Vendor Ranking Engine.
+    Uses bulk aggregation to avoid N+1 queries.
     """
+    # Bulk Fetch: Total Quotes per Vendor
+    quote_counts = db.query(
+        Quote.vendor_id, 
+        func.count(Quote.id).label("total_quotes"),
+        func.avg(Quote.delivery_time).label("avg_delivery")
+    ).group_by(Quote.vendor_id).all()
+    
+    quote_map = {q.vendor_id: {"total_quotes": q.total_quotes, "avg_delivery": q.avg_delivery} for q in quote_counts}
+
+    # Bulk Fetch: Accepted Quotes (where order is deal_closed)
+    accepted_counts = db.query(
+        Quote.vendor_id,
+        func.count(Quote.id).label("accepted_quotes")
+    ).join(Order, Quote.order_id == Order.id).filter(
+        Order.status == 'deal_closed'
+    ).group_by(Quote.vendor_id).all()
+    
+    accepted_map = {q.vendor_id: q.accepted_quotes for q in accepted_counts}
+
     vendors = db.query(Vendor).all()
     ranked_vendors = []
     
     for v in vendors:
-        # Fetch actual metrics for this vendor
-        total_quotes = db.query(func.count(Quote.id)).filter(Quote.vendor_id == v.id).scalar()
-        
-        # Accepted quotes are those where the order deal_closed
-        accepted_quotes = db.query(func.count(Quote.id)).join(Order, Quote.order_id == Order.id).filter(
-            Quote.vendor_id == v.id,
-            Order.status == 'deal_closed'
-        ).scalar()
-        
-        avg_delivery = db.query(func.avg(Quote.delivery_time)).filter(Quote.vendor_id == v.id).scalar() or 10
+        q_stats = quote_map.get(v.id, {"total_quotes": 0, "avg_delivery": 10})
         
         metrics = {
-            "total_quotes": total_quotes,
-            "accepted_quotes": accepted_quotes,
-            "avg_delivery_time": float(avg_delivery),
+            "total_quotes": q_stats["total_quotes"],
+            "accepted_quotes": accepted_map.get(v.id, 0),
+            "avg_delivery_time": float(q_stats["avg_delivery"] or 10),
             "fraud_score": float(v.fraud_score or 50.0)
         }
         
@@ -87,7 +98,6 @@ def get_vendor_rankings(db: Session = Depends(get_db)):
             "metrics": rating["metrics"]
         })
         
-    # Sort descending by stars
     ranked_vendors.sort(key=lambda x: x["stars"], reverse=True)
     return ranked_vendors
 
@@ -96,22 +106,12 @@ def get_advisor_insights(db: Session = Depends(get_db)):
     """
     Uses the AI Advisor engine to generate strategic text recommendations.
     """
-    # 1. Gather Vendor States
-    vendors = db.query(Vendor).all()
-    vendor_stats = []
-    for v in vendors:
-        total_quotes = db.query(func.count(Quote.id)).filter(Quote.vendor_id == v.id).scalar()
-        accepted_quotes = db.query(func.count(Quote.id)).join(Order).filter(Quote.vendor_id == v.id, Order.status == 'deal_closed').scalar()
-        avg_delivery = db.query(func.avg(Quote.delivery_time)).filter(Quote.vendor_id == v.id).scalar() or 10
-        
-        metrics = {"total_quotes": total_quotes, "accepted_quotes": accepted_quotes, "avg_delivery_time": float(avg_delivery), "fraud_score": float(v.fraud_score or 50.0)}
-        rating = calculate_vendor_rating(metrics)
-        
-        vendor_stats.append({
-            "name": v.name,
-            "stars": rating["stars"],
-            "metrics": rating["metrics"]
-        })
+    # 1. Gather Vendor States (optimized)
+    rankings = get_vendor_rankings(db)
+    vendor_stats = [
+        {"name": r["name"], "stars": r["stars"], "metrics": r["metrics"]}
+        for r in rankings
+    ]
         
     # 2. Gather active opportunities (from latest price drops)
     # Simple heuristic for dummy engine matching:

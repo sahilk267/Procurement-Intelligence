@@ -1,13 +1,27 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import auth, vendors, orders, quotes, leads, analytics, notifications, discovery, ai_brain
+from backend.config import settings
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import SQLAlchemyError
+import logging
 
 app = FastAPI(title="Procurement Intelligence Platform", version="1.0.0")
+
+# Global Database Error Handler
+@app.exception_handler(SQLAlchemyError)
+async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
+    logging.error(f"Database error: {str(exc)}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "A database error occurred. Internal security prevented schema exposure."},
+    )
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify allowed origins
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

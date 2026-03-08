@@ -27,6 +27,7 @@ Frontend Layer
 API Gateway Layer
 Core Microservices Layer
 Schemas / DTO Layer (Validation)
+Configuration & Environment Layer
 Automation & Worker Layer
 AI Intelligence Layer
 Data Layer
@@ -306,6 +307,11 @@ Fraud signals
 Price history
 Analytics data
 
+Optimizations:
+
+- **Database Indexing**: High-traffic columns (Vendor name, Category, Order status, Signal type) are indexed for sub-millisecond lookups.
+- **Bulk Aggregations**: Analytics routes utilize `GROUP BY` and `JOIN` aggregations to eliminate N+1 query bottlenecks.
+
 
 
 ## 9. Infrastructure Layer
@@ -337,7 +343,10 @@ JWT authentication
 Role-based access control
 API rate limiting
 Audit logging
+Audit logging
 Encrypted credentials
+**Environment Isolation**: Sensitive keys are removed from source code and managed via `.env` files.
+**Database Exception Shielding**: Global error handlers prevent schema leaks during failures.
 
 Vendor fraud monitoring is integrated into the procurement workflow.
 

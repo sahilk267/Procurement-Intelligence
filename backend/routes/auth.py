@@ -7,13 +7,14 @@ from passlib.context import CryptContext
 from schemas.auth_schema import UserCreate, UserResponse, Token
 from models.database import get_db
 from models.models import User
+from backend.config import settings
 
 router = APIRouter()
 
-# Security settings
-SECRET_KEY = "your-secret-key"  # In production, use environment variable
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+# JWT Settings from config
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

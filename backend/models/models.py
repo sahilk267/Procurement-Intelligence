@@ -1,5 +1,8 @@
+from models.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, DECIMAL, ARRAY, Date, Float, ForeignKey, TypeDecorator
 import json
+from datetime import datetime
+from sqlalchemy.orm import relationship
 
 class StringArray(TypeDecorator):
     impl = Text
@@ -25,18 +28,13 @@ class StringArray(TypeDecorator):
         if value is not None:
             return json.loads(value)
         return value
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from datetime import datetime
-
-Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
-    email = Column(String(255), unique=True, nullable=False)
+    name = Column(String(255), nullable=False, index=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
     role = Column(String(50), default="operator")
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -46,10 +44,10 @@ class Vendor(Base):
     __tablename__ = "vendors"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
-    city = Column(String(100))
+    name = Column(String(255), nullable=False, index=True)
+    city = Column(String(100), index=True)
     area = Column(String(100))
-    category = Column(String(100))
+    category = Column(String(100), index=True)
     brands = Column(StringArray)  # Array of brands
     product_condition = Column(String(50))  # new, used, both
     email = Column(String(255))
@@ -77,7 +75,7 @@ class Order(Base):
     condition = Column(String(50))
     location = Column(String(255))
     deadline = Column(Date)
-    status = Column(String(50), default="open")
+    status = Column(String(50), default="open", index=True)
     created_by = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)
@@ -101,7 +99,7 @@ class Lead(Base):
     contact_person = Column(String(255))
     email = Column(String(255))
     phone = Column(String(20))
-    interest_category = Column(String(100))
+    interest_category = Column(String(100), index=True)
     source = Column(String(100))
     status = Column(String(50), default="new")
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -122,7 +120,7 @@ class PriceHistory(Base):
     id = Column(Integer, primary_key=True, index=True)
     product_name = Column(String(255))
     brand = Column(String(100))
-    category = Column(String(100))
+    category = Column(String(100), index=True)
     price = Column(DECIMAL(10,2))
     vendor_id = Column(Integer, ForeignKey("vendors.id"))
     recorded_at = Column(DateTime, default=datetime.utcnow)
@@ -139,7 +137,7 @@ class Opportunity(Base):
     source = Column(String(100))  # vendor_quote, marketplace, social_media
     location = Column(String(255))
     score = Column(Float, default=0.0)
-    signal_type = Column(String(50))  # price_drop, bulk_inventory, demand_spike
+    signal_type = Column(String(50), index=True)  # price_drop, bulk_inventory, demand_spike
     status = Column(String(50), default="detected")  # detected, actioned, expired
     created_at = Column(DateTime, default=datetime.utcnow)
 
