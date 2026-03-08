@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from datetime import date
 from models.database import get_db
 from models.models import Order
+from backend.workers.rfq_broadcaster import broadcast_rfq_task
 from routes.auth import get_current_user
 
 router = APIRouter()
@@ -76,8 +77,8 @@ def send_rfq(order_id: int, db: Session = Depends(get_db), current_user = Depend
     order = db.query(Order).filter(Order.id == order_id).first()
     if order is None:
         raise HTTPException(status_code=404, detail="Order not found")
-    # Here we would trigger the RFQ worker
-    # For now, just update status
-    order.status = "rfq_sent"
-    db.commit()
-    return {"message": "RFQ sent to vendors"}
+    
+    # Trigger the RFQ background worker
+    broadcast_rfq_task.delay(order.id, current_user.id)
+    
+    return {"message": "RFQ broadcast triggered in background."}

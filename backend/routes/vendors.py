@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
-from models.database import get_db
 from models.models import Vendor
 from routes.auth import get_current_user
+from backend.ai_engines.fraud_detection import calculate_fraud_score
 
 router = APIRouter()
 
@@ -37,7 +37,12 @@ class VendorResponse(BaseModel):
 
 @router.post("/", response_model=VendorResponse)
 def create_vendor(vendor: VendorCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    db_vendor = Vendor(**vendor.dict())
+    vendor_dict = vendor.dict()
+    
+    # Calculate Fraud Score using our AI Engine
+    vendor_score = calculate_fraud_score(vendor_dict)
+    
+    db_vendor = Vendor(**vendor_dict, fraud_score=vendor_score)
     db.add(db_vendor)
     db.commit()
     db.refresh(db_vendor)

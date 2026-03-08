@@ -70,6 +70,8 @@ export const analyticsAPI = {
   getDeals: () => apiClient.get('/analytics/deals'),
   getPrices: () => apiClient.get('/analytics/prices'),
   getLeads: () => apiClient.get('/analytics/leads'),
+  getVendorRankings: () => apiClient.get('/analytics/vendor-rankings'),
+  getAdvisorInsights: () => apiClient.get('/analytics/advisor-insights'),
 };
 
 // Notifications API

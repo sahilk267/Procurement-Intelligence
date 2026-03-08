@@ -57,6 +57,8 @@ export default function AnalyticsDashboard() {
   const [dealData, setDealData] = useState<DealAnalytics | null>(null);
   const [priceData, setPriceData] = useState<PriceAnalytics | null>(null);
   const [leadData, setLeadData] = useState<LeadAnalytics | null>(null);
+  const [advisorInsights, setAdvisorInsights] = useState<string[]>([]);
+  const [vendorRankings, setVendorRankings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,17 +71,21 @@ export default function AnalyticsDashboard() {
       setIsLoading(true);
       setError(null);
 
-      const [vendors, deals, prices, leads] = await Promise.all([
+      const [vendors, deals, prices, leads, insights, rankings] = await Promise.all([
         analyticsAPI.getVendors(),
         analyticsAPI.getDeals(),
         analyticsAPI.getPrices(),
         analyticsAPI.getLeads(),
+        analyticsAPI.getAdvisorInsights(),
+        analyticsAPI.getVendorRankings(),
       ]);
 
       setVendorData(vendors.data);
       setDealData(deals.data);
       setPriceData(prices.data);
       setLeadData(leads.data);
+      setAdvisorInsights(insights.data?.strategic_insights || []);
+      setVendorRankings(rankings.data || []);
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to load analytics');
       console.error('Analytics error:', err);
@@ -119,6 +125,55 @@ export default function AnalyticsDashboard() {
           Refresh Data
         </button>
       </div>
+
+      {/* AI Advisor Insights */}
+      {advisorInsights.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <h2 className="text-2xl font-semibold text-gray-900">🤖 AI Advisor</h2>
+            <span className="px-2 py-1 text-xs font-semibold bg-indigo-100 text-indigo-800 rounded-full">Phase 5 Engine</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {advisorInsights.map((insight, idx) => (
+              <div key={idx} className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg shadow p-5 border border-indigo-100">
+                <p className="text-gray-800 font-medium">{insight}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Vendor Rankings */}
+      {vendorRankings.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <h2 className="text-2xl font-semibold text-gray-900">🏆 Top Vendors</h2>
+            <span className="px-2 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full">Dynamic Ranking</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white shadow rounded-lg overflow-hidden">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vendor Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rating</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Success Rate</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {vendorRankings.slice(0, 5).map((vendor, idx) => (
+                  <tr key={idx}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{vendor.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{vendor.category || 'N/A'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 font-bold">{vendor.stars} ⭐</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{vendor.metrics.success_rate}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Vendor Analytics */}
       <div className="space-y-4">
