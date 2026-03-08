@@ -26,6 +26,7 @@ The platform follows a layered architecture.
 Frontend Layer
 API Gateway Layer
 Core Microservices Layer
+Schemas / DTO Layer (Validation)
 Automation & Worker Layer
 AI Intelligence Layer
 Data Layer
@@ -158,6 +159,19 @@ Vendor quote submission
 Quote comparison
 Best deal identification
 Vendor ranking
+
+
+
+### Schemas Layer (Validation)
+
+Acts as the absolute payload validator isolating Routes from Models.
+
+Responsibilities:
+
+Pydantic V2 Request Validation
+DTO Response Serialization
+Regex field sanitization (Phone, URL, Email)
+Enum bounded constraints
 
 
 
