@@ -187,3 +187,17 @@ class AIAlert(Base):
     related_order_id = Column(Integer, ForeignKey("orders.id"), nullable=True)
     is_dismissed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class NegotiationLog(Base):
+    __tablename__ = "negotiation_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id"))
+    quote_id = Column(Integer, ForeignKey("quotes.id"))
+    vendor_id = Column(Integer, ForeignKey("vendors.id"))
+    round_number = Column(Integer, default=1)
+    previous_price = Column(DECIMAL(10,2))
+    offered_price = Column(DECIMAL(10,2))
+    status = Column(String(50), default="sent")  # sent, accepted, rejected, counter_offered
+    message_content = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)

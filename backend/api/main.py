@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import auth, vendors, orders, quotes, leads, analytics, notifications, discovery, ai_brain
+from routes import auth, vendors, orders, quotes, leads, analytics, notifications, discovery, ai_brain, prices
 from backend.config import settings
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -37,6 +37,7 @@ app.include_router(analytics, prefix="/api/v1/analytics", tags=["Analytics"])
 app.include_router(notifications, prefix="/api/v1/notifications", tags=["Notifications"])
 app.include_router(discovery.router, prefix="/api/v1/discovery", tags=["Discovery"])
 app.include_router(ai_brain.router, prefix="/api/v1/ai", tags=["AI Brain"])
+app.include_router(prices.router, prefix="/api/v1/prices", tags=["Price Intelligence"])
 
 @app.get("/")
 async def root():

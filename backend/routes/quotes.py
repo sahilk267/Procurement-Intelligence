@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from schemas.quote_schema import QuoteCreate, QuoteResponse
 from models.database import get_db
-from models.models import Quote, Order, Vendor
+from models.models import Quote, Order, Vendor, NegotiationLog
 from routes.auth import get_current_user
 from backend.services.quote_comparison import compare_quotes, auto_negotiate_quote
 
@@ -68,4 +68,19 @@ def auto_negotiate(quote_id: int, db: Session = Depends(get_db), current_user = 
     order = db.query(Order).filter(Order.id == quote.order_id).first()
     
     result = auto_negotiate_quote(quote, order)
+    
+    # Persist the negotiation step if a counter-offer was made
+    if result.get("action") == "negotiate":
+        log = NegotiationLog(
+            order_id=order.id,
+            quote_id=quote.id,
+            vendor_id=quote.vendor_id,
+            previous_price=quote.quoted_price,
+            offered_price=result["suggested_price"],
+            status="counter_offered",
+            message_content=result["negotiation_message"]
+        )
+        db.add(log)
+        db.commit()
+        
     return result

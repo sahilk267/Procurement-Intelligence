@@ -60,3 +60,46 @@ def get_profit_optimization(order_id: int, db: Session = Depends(get_db), curren
         
     optimization = calculate_profit_optimization(quotes, order)
     return optimization
+
+# Blueprint Aligned Aliases
+@router.get("/recommendations")
+def get_ai_recommendations(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    """
+    Blueprint: GET /ai/recommendations
+    Returns high-level recommendations for active orders.
+    """
+    active_orders = db.query(Order).filter(Order.status != "Closed").all()
+    recommendations = []
+    for order in active_orders:
+        quotes = db.query(Quote).filter(Quote.order_id == order.id).all()
+        if quotes:
+            opt = calculate_profit_optimization(quotes, order)
+            recommendations.append({
+                "order_id": order.id,
+                "product": order.product_name,
+                "best_quote_id": opt["recommended_quote_id"],
+                "analysis": opt["strategic_analysis"]
+            })
+    return recommendations
+
+@router.get("/predictions")
+def get_ai_predictions(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    """
+    Blueprint: GET /ai/predictions
+    Returns outcome predictions for all active RFQs.
+    """
+    active_orders = db.query(Order).filter(Order.status == "RFQ Sent").all()
+    predictions = []
+    for order in active_orders:
+        quotes = db.query(Quote).filter(Quote.order_id == order.id).all()
+        for q in quotes:
+            vendor = db.query(Vendor).filter(Vendor.id == q.vendor_id).first()
+            rel = predict_vendor_reliability(vendor, [], order)["reliability_score"]
+            outcome = predict_deal_outcome(q, order, rel)
+            predictions.append({
+                "order_id": order.id,
+                "quote_id": q.id,
+                "vendor": vendor.name,
+                "success_probability": outcome["success_probability"]
+            })
+    return predictions
