@@ -1,5 +1,5 @@
 import pytest
-from backend.services.quote_comparison import compare_quotes, auto_negotiate_quote
+from services.quote_comparison import compare_quotes, auto_negotiate_quote
 
 class MockVendor:
     def __init__(self, v_id, name, verification, rating):

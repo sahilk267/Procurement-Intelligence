@@ -5,8 +5,8 @@ from schemas.vendor_schema import VendorCreate, VendorResponse
 from models.database import get_db
 from models.models import Vendor
 from routes.auth import get_current_user
-from backend.ai_engines.fraud_detection import calculate_fraud_score
-from backend.services.vendor_scoring import calculate_vendor_composite_score
+from ai_engines.fraud_detection import calculate_fraud_score
+from services.vendor_scoring import calculate_vendor_composite_score
 from sqlalchemy import or_
 
 router = APIRouter()

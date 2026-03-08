@@ -1,5 +1,5 @@
 import pytest
-from backend.ai_engines.ai_brain import predict_vendor_reliability, predict_deal_outcome, calculate_profit_optimization
+from ai_engines.ai_brain import predict_vendor_reliability, predict_deal_outcome, calculate_profit_optimization
 
 class MockVendor:
     def __init__(self, fraud, verified):

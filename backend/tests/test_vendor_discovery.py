@@ -1,7 +1,7 @@
 import pytest
-from backend.services.data_normalization import normalize_vendor_data
-from backend.services.duplicate_detection import find_duplicate_vendor
-from backend.schemas.vendor_schema import VendorCreate
+from services.data_normalization import normalize_vendor_data
+from services.duplicate_detection import find_duplicate_vendor
+from schemas.vendor_schema import VendorCreate
 
 class MockVendor:
     def __init__(self, name, email, phone, city):

@@ -21,8 +21,8 @@ os.environ["DATABASE_URL"] = "sqlite:///./test_db.db"
 
 from sqlalchemy import create_engine, event, Text, Float
 from sqlalchemy.orm import sessionmaker
-from backend.models.models import Base, Vendor, Order, Notification
-from backend.ai_engines.fraud_detection import calculate_fraud_score
+from models.models import Base, Vendor, Order, Notification
+from ai_engines.fraud_detection import calculate_fraud_score
 
 # ── 2. Create a dedicated test engine (same file as env override) ─────────
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_db.db"

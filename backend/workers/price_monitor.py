@@ -1,7 +1,7 @@
-from backend.workers.celery_app import celery_app
-from backend.models.database import SessionLocal
-from backend.models.models import PriceHistory, Vendor, Opportunity, Notification
-from backend.ai_engines.opportunity_detector import detect_market_opportunity
+from workers.celery_app import celery_app
+from models.database import SessionLocal
+from models.models import PriceHistory, Vendor, Opportunity, Notification
+from ai_engines.opportunity_detector import detect_market_opportunity
 from datetime import datetime, timedelta
 
 @celery_app.task(name="workers.price_monitor.monitor_prices_task")

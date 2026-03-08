@@ -1,6 +1,6 @@
-from backend.workers.celery_app import celery_app
-from backend.models.database import SessionLocal
-from backend.models.models import Lead
+from workers.celery_app import celery_app
+from models.database import SessionLocal
+from models.models import Lead
 import random
 
 MOCK_LEADS = [

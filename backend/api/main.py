@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import auth, vendors, orders, quotes, leads, analytics, notifications, discovery, ai_brain, prices
-from backend.config import settings
+from config import settings
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError

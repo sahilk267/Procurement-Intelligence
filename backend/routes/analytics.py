@@ -4,8 +4,8 @@ from sqlalchemy import func
 from models.database import get_db
 from models.models import Vendor, Order, Quote, Lead, PriceHistory, Opportunity
 from routes.auth import get_current_user
-from backend.ai_engines.vendor_ranking import calculate_vendor_rating
-from backend.ai_engines.ai_advisor import generate_insights
+from ai_engines.vendor_ranking import calculate_vendor_rating
+from ai_engines.ai_advisor import generate_insights
 
 router = APIRouter()
 

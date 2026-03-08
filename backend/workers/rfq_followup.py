@@ -1,6 +1,6 @@
-from backend.workers.celery_app import celery_app
-from backend.models.database import SessionLocal
-from backend.models.models import Order, Notification
+from workers.celery_app import celery_app
+from models.database import SessionLocal
+from models.models import Order, Notification
 from datetime import datetime, timedelta
 
 @celery_app.task(name="workers.rfq_followup.check_stale_rfqs_task")
@@ -19,7 +19,7 @@ def check_stale_rfqs_task():
             Order.updated_at <= yesterday
         ).all()
         
-        from backend.models.models import Quote
+        from models.models import Quote
         for order in stale_orders:
             # Check if there are quotes via direct query
             has_quotes = db.query(Quote).filter(Quote.order_id == order.id).first()

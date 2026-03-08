@@ -6,7 +6,7 @@ from schemas.order_schema import OrderCreate, OrderResponse
 from datetime import date
 from models.database import get_db
 from models.models import Order, Quote
-from backend.workers.rfq_broadcaster import broadcast_rfq_task
+from workers.rfq_broadcaster import broadcast_rfq_task
 from routes.auth import get_current_user
 
 router = APIRouter()

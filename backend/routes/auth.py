@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from schemas.auth_schema import UserCreate, UserResponse, Token
 from models.database import get_db
 from models.models import User
-from backend.config import settings
+from config import settings
 
 router = APIRouter()
 

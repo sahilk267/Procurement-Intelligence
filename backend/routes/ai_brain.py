@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from models.database import get_db
 from models.models import Vendor, Order, Quote
 from routes.auth import get_current_user
-from backend.ai_engines.ai_brain import predict_vendor_reliability, predict_deal_outcome, calculate_profit_optimization
+from ai_engines.ai_brain import predict_vendor_reliability, predict_deal_outcome, calculate_profit_optimization
 
 router = APIRouter()
 

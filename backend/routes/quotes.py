@@ -5,7 +5,7 @@ from schemas.quote_schema import QuoteCreate, QuoteResponse
 from models.database import get_db
 from models.models import Quote, Order, Vendor, NegotiationLog
 from routes.auth import get_current_user
-from backend.services.quote_comparison import compare_quotes, auto_negotiate_quote
+from services.quote_comparison import compare_quotes, auto_negotiate_quote
 
 router = APIRouter()
 

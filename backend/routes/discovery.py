@@ -5,7 +5,7 @@ from typing import Dict, Any
 from models.database import get_db
 from models.models import Vendor
 from routes.auth import get_current_user
-from backend.workers.vendor_discovery import discover_vendors_task
+from workers.vendor_discovery import discover_vendors_task
 
 router = APIRouter()
 

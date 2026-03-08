@@ -1,11 +1,11 @@
-from backend.workers.celery_app import celery_app
-from backend.models.database import SessionLocal
-from backend.models.models import Vendor
+from workers.celery_app import celery_app
+from models.database import SessionLocal
+from models.models import Vendor
 import random
 import time
 
-from backend.services.data_normalization import normalize_vendor_data
-from backend.services.duplicate_detection import find_duplicate_vendor
+from services.data_normalization import normalize_vendor_data
+from services.duplicate_detection import find_duplicate_vendor
 
 MOCK_VENDORS = [
     {"name": "Elite IT Supplies", "city": "Mumbai", "area": "Lamington Road", "description": "We sell Cisco switches and networking gear", "source": "IndiaMART", "phone": "+91-98765-43210", "email": "contact@eliteit.com"},

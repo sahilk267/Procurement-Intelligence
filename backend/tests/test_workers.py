@@ -1,8 +1,8 @@
 import pytest
-from backend.workers.rfq_broadcaster import broadcast_rfq_task
-from backend.workers.vendor_discovery import discover_vendors_task
-from backend.workers.price_monitor import monitor_prices_task
-from backend.workers.lead_scraper import scrape_leads_task
+from workers.rfq_broadcaster import broadcast_rfq_task
+from workers.vendor_discovery import discover_vendors_task
+from workers.price_monitor import monitor_prices_task
+from workers.lead_scraper import scrape_leads_task
 
 def test_vendor_discovery():
     # Sync call

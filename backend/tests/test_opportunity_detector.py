@@ -1,5 +1,5 @@
 import pytest
-from backend.ai_engines.opportunity_detector import detect_market_opportunity
+from ai_engines.opportunity_detector import detect_market_opportunity
 
 def test_price_drop_opportunity():
     hist_prices = [100.0, 105.0, 95.0]  # avg = 100.0

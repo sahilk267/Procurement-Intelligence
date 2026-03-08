@@ -1,8 +1,8 @@
 import pytest
-from backend.ai_engines.fraud_detection import calculate_fraud_score
-from backend.ai_engines.opportunity_detection import detect_price_drop_opportunity
-from backend.ai_engines.vendor_ranking import calculate_vendor_rating
-from backend.ai_engines.ai_advisor import generate_insights
+from ai_engines.fraud_detection import calculate_fraud_score
+from ai_engines.opportunity_detection import detect_price_drop_opportunity
+from ai_engines.vendor_ranking import calculate_vendor_rating
+from ai_engines.ai_advisor import generate_insights
 
 def test_fraud_detection():
     # Good vendor

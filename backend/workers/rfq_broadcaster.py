@@ -1,6 +1,6 @@
-from backend.workers.celery_app import celery_app
-from backend.models.database import SessionLocal
-from backend.models.models import Order, Vendor, Notification
+from workers.celery_app import celery_app
+from models.database import SessionLocal
+from models.models import Order, Vendor, Notification
 import time
 
 @celery_app.task(name="workers.rfq_broadcaster.broadcast_rfq_task")
@@ -14,7 +14,7 @@ def broadcast_rfq_task(order_id: int, user_id: int):
         if not order:
             return {"status": "error", "message": f"Order {order_id} not found."}
 
-        from backend.services.vendor_filter import filter_vendors_for_rfq
+        from services.vendor_filter import filter_vendors_for_rfq
         
         # Get all vendors
         all_vendors = db.query(Vendor).all()
