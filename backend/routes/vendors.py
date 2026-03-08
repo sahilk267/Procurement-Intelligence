@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from pydantic import BaseModel
+from schemas.vendor_schema import VendorCreate, VendorResponse
 from models.database import get_db
 from models.models import Vendor
 from routes.auth import get_current_user
@@ -11,44 +11,11 @@ from sqlalchemy import or_
 
 router = APIRouter()
 
-class VendorCreate(BaseModel):
-    name: str
-    city: Optional[str] = None
-    area: Optional[str] = None
-    category: Optional[str] = None
-    brands: Optional[List[str]] = None
-    product_condition: Optional[str] = None
-    email: Optional[str] = None
-    phone: Optional[str] = None
-    website: Optional[str] = None
-    gst_number: Optional[str] = None
-    discovery_source: Optional[str] = "manual"
-    years_in_business: Optional[int] = None
-    employee_count: Optional[int] = None
-    google_rating: Optional[float] = None
 
-class VendorResponse(BaseModel):
-    id: int
-    name: str
-    city: Optional[str]
-    area: Optional[str]
-    category: Optional[str]
-    brands: Optional[List[str]]
-    product_condition: Optional[str]
-    email: Optional[str]
-    phone: Optional[str]
-    website: Optional[str]
-    gst_number: Optional[str]
-    verification_status: bool
-    fraud_score: float
-    discovery_source: Optional[str]
-    years_in_business: Optional[int]
-    employee_count: Optional[int]
-    google_rating: Optional[float]
 
 @router.post("/", response_model=VendorResponse)
 def create_vendor(vendor: VendorCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    vendor_dict = vendor.dict()
+    vendor_dict = vendor.model_dump()
     
     # Calculate Fraud Score using our AI Engine
     vendor_score = calculate_fraud_score(vendor_dict)
@@ -126,7 +93,7 @@ def update_vendor(vendor_id: int, vendor_update: VendorCreate, db: Session = Dep
     vendor = db.query(Vendor).filter(Vendor.id == vendor_id).first()
     if vendor is None:
         raise HTTPException(status_code=404, detail="Vendor not found")
-    for key, value in vendor_update.dict(exclude_unset=True).items():
+    for key, value in vendor_update.model_dump(exclude_unset=True).items():
         setattr(vendor, key, value)
     db.commit()
     db.refresh(vendor)

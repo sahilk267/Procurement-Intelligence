@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime, date
 from typing import List, Optional
-from pydantic import BaseModel
+from schemas.order_schema import OrderCreate, OrderResponse
 from datetime import date
 from models.database import get_db
 from models.models import Order, Quote
@@ -11,31 +11,11 @@ from routes.auth import get_current_user
 
 router = APIRouter()
 
-class OrderCreate(BaseModel):
-    product_name: str
-    brand: Optional[str] = None
-    category: Optional[str] = None
-    quantity: int
-    target_price: Optional[float] = None
-    condition: Optional[str] = None
-    location: Optional[str] = None
-    deadline: Optional[date] = None
 
-class OrderResponse(BaseModel):
-    id: int
-    product_name: str
-    brand: Optional[str]
-    category: Optional[str]
-    quantity: int
-    target_price: Optional[float]
-    condition: Optional[str]
-    location: Optional[str]
-    deadline: Optional[date]
-    status: str
 
 @router.post("/", response_model=OrderResponse)
 def create_order(order: OrderCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    db_order = Order(**order.dict(), created_by=current_user.id)
+    db_order = Order(**order.model_dump(), created_by=current_user.id)
     db.add(db_order)
     db.commit()
     db.refresh(db_order)
@@ -58,7 +38,7 @@ def update_order(order_id: int, order_update: OrderCreate, db: Session = Depends
     order = db.query(Order).filter(Order.id == order_id).first()
     if order is None:
         raise HTTPException(status_code=404, detail="Order not found")
-    for key, value in order_update.dict(exclude_unset=True).items():
+    for key, value in order_update.model_dump(exclude_unset=True).items():
         setattr(order, key, value)
     db.commit()
     db.refresh(order)

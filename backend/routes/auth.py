@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel
+from schemas.auth_schema import UserCreate, UserResponse, Token
 from models.database import get_db
 from models.models import User
 
@@ -18,20 +18,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-class UserCreate(BaseModel):
-    name: str
-    email: str
-    password: str
 
-class UserResponse(BaseModel):
-    id: int
-    name: str
-    email: str
-    role: str
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)

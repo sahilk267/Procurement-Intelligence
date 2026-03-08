@@ -1,20 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from pydantic import BaseModel
+from schemas.notification_schema import NotificationResponse, MarkReadRequest
 from models.database import get_db
 from models.models import Notification
 from routes.auth import get_current_user
 
 router = APIRouter()
 
-class NotificationResponse(BaseModel):
-    id: int
-    message: str
-    is_read: bool
 
-class MarkReadRequest(BaseModel):
-    notification_ids: List[int]
 
 @router.get("/", response_model=List[NotificationResponse])
 def get_notifications(db: Session = Depends(get_db), current_user = Depends(get_current_user)):

@@ -1,6 +1,7 @@
 import pytest
 from backend.services.data_normalization import normalize_vendor_data
 from backend.services.duplicate_detection import find_duplicate_vendor
+from backend.schemas.vendor_schema import VendorCreate
 
 class MockVendor:
     def __init__(self, name, email, phone, city):
@@ -11,22 +12,25 @@ class MockVendor:
 
 def test_normalization():
     raw = {
-        "name": "  TECH DISTRIBUTORS  ",
+        "name": " TECH distributors ",
         "email": " INFO@TECH.COM ",
-        "phone": "+91 99-88-77-66 55",
-        "description": "We specialize in Dell and HP Servers",
+        "phone": " +91-9988-7766-55 (ext 123) ",
+        "website": "www.tech-distributors.com ",
+        "description": "We sell hp servers and racks",
         "city": "mumbai",
-        "area": " andheri "
+        "area": " andheri  "
     }
     
-    clean = normalize_vendor_data(raw)
+    clean_dict = normalize_vendor_data(raw)
+    clean_schema = VendorCreate(**clean_dict).model_dump()
     
-    assert clean["name"] == "Tech Distributors"
-    assert clean["email"] == "info@tech.com"
-    assert clean["phone"] == "+919988776655"
-    assert clean["category"] == "Servers"
-    assert clean["city"] == "Mumbai"
-    assert clean["area"] == "Andheri"
+    assert clean_schema["name"] == "Tech Distributors"
+    assert clean_schema["email"] == "info@tech.com"
+    assert clean_schema["phone"] == "+91998877665512"
+    assert clean_schema["category"] == "Servers"
+    assert clean_schema["city"] == "Mumbai"
+    assert clean_schema["area"] == "Andheri"
+    assert clean_schema["website"] == "https://www.tech-distributors.com"
 
 def test_duplicate_detection_exact():
     v1 = MockVendor("Acme", "contact@acme.com", "123", "Delhi")
