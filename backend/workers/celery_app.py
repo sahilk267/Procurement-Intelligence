@@ -12,7 +12,8 @@ celery_app = Celery(
         "workers.vendor_discovery",
         "workers.price_monitor",
         "workers.lead_scraper",
-        "workers.rfq_broadcaster"
+        "workers.rfq_broadcaster",
+        "workers.rfq_followup"
     ]
 )
 
@@ -41,4 +42,8 @@ celery_app.conf.beat_schedule = {
         'task': 'workers.lead_scraper.scrape_leads_task',
         'schedule': crontab(minute=0, hour=2),  # 2 AM daily
     },
+    'check-stale-rfqs-hourly': {
+        'task': 'workers.rfq_followup.check_stale_rfqs_task',
+        'schedule': crontab(minute=30, hour='*'), # Every hour on the half hour
+    }
 }

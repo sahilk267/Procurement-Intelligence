@@ -14,9 +14,16 @@ def broadcast_rfq_task(order_id: int, user_id: int):
         if not order:
             return {"status": "error", "message": f"Order {order_id} not found."}
 
-        # Find vendors in the same category
-        vendors = db.query(Vendor).filter(Vendor.category == order.category).all()
-        vendor_count = len(vendors)
+        from backend.services.vendor_filter import filter_vendors_for_rfq
+        
+        # Get all vendors
+        all_vendors = db.query(Vendor).all()
+        # Filter best vendors
+        selected_vendors = filter_vendors_for_rfq(order, all_vendors)
+        vendor_count = len(selected_vendors)
+        
+        if vendor_count == 0:
+            return {"status": "error", "message": f"No suitable vendors found for order {order_id}."}
 
         # Simulate network delay for sending emails/messages
         time.sleep(2)

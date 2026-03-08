@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import auth, vendors, orders, quotes, leads, analytics, notifications
+from routes import auth, vendors, orders, quotes, leads, analytics, notifications, discovery, ai_brain
 
 app = FastAPI(title="Procurement Intelligence Platform", version="1.0.0")
 
@@ -21,10 +21,16 @@ app.include_router(quotes, prefix="/api/v1/quotes", tags=["Quotes"])
 app.include_router(leads, prefix="/api/v1/leads", tags=["Leads"])
 app.include_router(analytics, prefix="/api/v1/analytics", tags=["Analytics"])
 app.include_router(notifications, prefix="/api/v1/notifications", tags=["Notifications"])
+app.include_router(discovery.router, prefix="/api/v1/discovery", tags=["Discovery"])
+app.include_router(ai_brain.router, prefix="/api/v1/ai", tags=["AI Brain"])
 
 @app.get("/")
 async def root():
     return {"message": "Procurement Intelligence Platform API"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 if __name__ == "__main__":
     import uvicorn

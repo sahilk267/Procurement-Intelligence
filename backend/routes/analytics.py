@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from models.database import get_db
-from models.models import Vendor, Order, Quote, Lead, PriceHistory
+from models.models import Vendor, Order, Quote, Lead, PriceHistory, Opportunity
 from routes.auth import get_current_user
 from backend.ai_engines.vendor_ranking import calculate_vendor_rating
 from backend.ai_engines.ai_advisor import generate_insights
@@ -126,3 +126,11 @@ def get_advisor_insights(db: Session = Depends(get_db)):
     # 3. Generate insights
     insights = generate_insights(vendor_stats, opportunities)
     return {"strategic_insights": insights}
+
+@router.get("/opportunities")
+def get_opportunities(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    """
+    Returns active market opportunities flagged by the Price Monitor AI Engine.
+    """
+    active_ops = db.query(Opportunity).filter(Opportunity.status == "active").order_by(Opportunity.score.desc()).all()
+    return active_ops

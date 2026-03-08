@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from datetime import datetime, date
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import date
 from models.database import get_db
-from models.models import Order
+from models.models import Order, Quote
 from backend.workers.rfq_broadcaster import broadcast_rfq_task
 from routes.auth import get_current_user
 
@@ -82,3 +83,33 @@ def send_rfq(order_id: int, db: Session = Depends(get_db), current_user = Depend
     broadcast_rfq_task.delay(order.id, current_user.id)
     
     return {"message": "RFQ broadcast triggered in background."}
+
+@router.get("/{order_id}/quotes")
+def get_order_quotes(order_id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    quotes = db.query(Quote).filter(Quote.order_id == order_id).all()
+    return quotes
+
+@router.post("/{order_id}/close")
+def close_deal(order_id: int, winning_quote_id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    quote = db.query(Quote).filter(Quote.id == winning_quote_id, Quote.order_id == order_id).first()
+    if not quote:
+        raise HTTPException(status_code=404, detail="Winning quote not found or does not belong to this order")
+        
+    order.status = "Closed"
+    order.updated_at = datetime.utcnow()
+    
+    db.commit()
+    return {
+        "message": "Deal closed successfully",
+        "order_id": order.id,
+        "winning_quote_id": quote.id,
+        "final_price": float(quote.quoted_price)
+    }

@@ -9,8 +9,8 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from api.main import app
-from models.database import Base, get_db
-from models.models import User, Vendor, Order, Quote, Lead
+from models.database import get_db
+from models.models import Base, User, Vendor, Order, Quote, Lead
 
 # Test database setup
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"

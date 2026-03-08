@@ -1,4 +1,30 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, DECIMAL, ARRAY, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, DECIMAL, ARRAY, Date, Float, ForeignKey, TypeDecorator
+import json
+
+class StringArray(TypeDecorator):
+    impl = Text
+    cache_ok = True
+
+    def load_dialect_impl(self, dialect):
+        if dialect.name == 'postgresql':
+            from sqlalchemy.dialects.postgresql import ARRAY
+            return dialect.type_descriptor(ARRAY(String))
+        else:
+            return dialect.type_descriptor(Text())
+
+    def process_bind_param(self, value, dialect):
+        if dialect.name == 'postgresql':
+            return value
+        if value is not None:
+            return json.dumps(value)
+        return value
+
+    def process_result_value(self, value, dialect):
+        if dialect.name == 'postgresql':
+            return value
+        if value is not None:
+            return json.loads(value)
+        return value
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -24,14 +50,18 @@ class Vendor(Base):
     city = Column(String(100))
     area = Column(String(100))
     category = Column(String(100))
-    brands = Column(ARRAY(String))  # Array of brands
+    brands = Column(StringArray)  # Array of brands
     product_condition = Column(String(50))  # new, used, both
     email = Column(String(255))
     phone = Column(String(20))
     website = Column(String(255))
     gst_number = Column(String(50))
     verification_status = Column(Boolean, default=False)
-    fraud_score = Column(DECIMAL(3,2), default=0.0)
+    fraud_score = Column(DECIMAL(5,2), default=0.0)
+    discovery_source = Column(String(100), default="manual")
+    years_in_business = Column(Integer, nullable=True)
+    employee_count = Column(Integer, nullable=True)
+    google_rating = Column(Float, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)
 
@@ -96,3 +126,66 @@ class PriceHistory(Base):
     price = Column(DECIMAL(10,2))
     vendor_id = Column(Integer, ForeignKey("vendors.id"))
     recorded_at = Column(DateTime, default=datetime.utcnow)
+
+class Opportunity(Base):
+    __tablename__ = "opportunities"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_name = Column(String(255), nullable=False)
+    brand = Column(String(100))
+    category = Column(String(100))
+    estimated_margin = Column(DECIMAL(10,2))
+    inventory_size = Column(Integer)
+    source = Column(String(100))  # vendor_quote, marketplace, social_media
+    location = Column(String(255))
+    score = Column(Float, default=0.0)
+    signal_type = Column(String(50))  # price_drop, bulk_inventory, demand_spike
+    status = Column(String(50), default="detected")  # detected, actioned, expired
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class AIVendorScore(Base):
+    __tablename__ = "ai_vendor_scores"
+
+    id = Column(Integer, primary_key=True, index=True)
+    vendor_id = Column(Integer, ForeignKey("vendors.id"))
+    reliability_score = Column(Float, default=0.0)
+    response_score = Column(Float, default=0.0)
+    delivery_score = Column(Float, default=0.0)
+    composite_score = Column(Float, default=0.0)
+    calculated_at = Column(DateTime, default=datetime.utcnow)
+
+class AIDealPrediction(Base):
+    __tablename__ = "ai_deal_predictions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id"))
+    vendor_id = Column(Integer, ForeignKey("vendors.id"))
+    success_probability = Column(Float, default=0.0)
+    predicted_margin = Column(DECIMAL(10,2))
+    recommendation = Column(Text)
+    predicted_at = Column(DateTime, default=datetime.utcnow)
+
+class AIPricePrediction(Base):
+    __tablename__ = "ai_price_predictions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_name = Column(String(255))
+    category = Column(String(100))
+    current_price = Column(DECIMAL(10,2))
+    predicted_price = Column(DECIMAL(10,2))
+    prediction_date = Column(Date)
+    confidence = Column(Float, default=0.0)
+    predicted_at = Column(DateTime, default=datetime.utcnow)
+
+class AIAlert(Base):
+    __tablename__ = "ai_alerts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    alert_type = Column(String(50), nullable=False)  # high_margin, high_risk, slow_response, price_drop
+    title = Column(String(255), nullable=False)
+    message = Column(Text, nullable=False)
+    severity = Column(String(20), default="info")  # info, warning, critical
+    related_vendor_id = Column(Integer, ForeignKey("vendors.id"), nullable=True)
+    related_order_id = Column(Integer, ForeignKey("orders.id"), nullable=True)
+    is_dismissed = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
