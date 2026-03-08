@@ -160,6 +160,7 @@ Deliverables:
 
 ✔ automated recommendations
 ✔ risk alerts
+✔ **Production Hardening & Functional Parity** (100% Complete)
 
 
 # 3️⃣ GitHub Project Structure
@@ -426,6 +427,22 @@ notifications (
  read_status BOOLEAN
 )
 
+## Negotiation Logs
+
+sql
+negotiation_logs (
+ id UUID PRIMARY KEY,
+ order_id UUID,
+ quote_id UUID,
+ vendor_id UUID,
+ round_number INT,
+ previous_price DECIMAL,
+ offered_price DECIMAL,
+ status VARCHAR(50),
+ message_content TEXT,
+ created_at TIMESTAMP
+)
+
 
 # 5️⃣ API Endpoints
 
@@ -441,7 +458,7 @@ text
 text
 POST /auth/register
 POST /auth/login
-POST /auth/logout
+POST /auth/logout (Handled via JWT discarding)
 GET /auth/profile
 
 
