@@ -55,6 +55,20 @@ export const quotesAPI = {
   getAll: (params?: any) => apiClient.get('/quotes', { params }),
   create: (data: any) => apiClient.post('/quotes', data),
   update: (id: string, data: any) => apiClient.put(`/quotes/${id}`, data),
+  autoNegotiate: (orderId: string) => apiClient.post(`/quotes/auto-negotiate/${orderId}`),
+};
+
+// Price Intelligence API
+export const pricesAPI = {
+  getHistory: (productName?: string) => apiClient.get('/prices/history', { params: { product_name: productName } }),
+  getAverage: (category?: string) => apiClient.get('/prices/average', { params: { category } }),
+  getOpportunities: () => apiClient.get('/prices/opportunities'),
+};
+
+// AI Advisor API
+export const aiAPI = {
+  getRecommendations: () => apiClient.get('/ai/recommendations'),
+  getPredictions: () => apiClient.get('/ai/predictions'),
 };
 
 // Leads API

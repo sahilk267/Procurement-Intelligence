@@ -171,3 +171,20 @@ CREATE INDEX idx_opportunities_category ON opportunities(category);
 CREATE INDEX idx_ai_vendor_scores_vendor ON ai_vendor_scores(vendor_id);
 CREATE INDEX idx_ai_alerts_type ON ai_alerts(alert_type);
 CREATE INDEX idx_ai_alerts_dismissed ON ai_alerts(is_dismissed);
+
+-- Negotiation logs table
+CREATE TABLE negotiation_logs (
+    id SERIAL PRIMARY KEY,
+    order_id INTEGER REFERENCES orders(id),
+    quote_id INTEGER REFERENCES quotes(id),
+    vendor_id INTEGER REFERENCES vendors(id),
+    round_number INTEGER DEFAULT 1,
+    previous_price DECIMAL(10,2),
+    offered_price DECIMAL(10,2),
+    status VARCHAR(50) DEFAULT 'sent',
+    message_content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_negotiation_logs_order ON negotiation_logs(order_id);
+CREATE INDEX idx_negotiation_logs_vendor ON negotiation_logs(vendor_id);
