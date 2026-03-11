@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { notificationsAPI } from '@/lib/api';
+import { notificationsAPI } from '../../../lib/api';
 
 interface Notification {
   id: string;
@@ -31,7 +31,7 @@ export default function NotificationsPage() {
       const response = await notificationsAPI.getAll();
       // Sort by date, newest first
       const sorted = (response.data || []).sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        (a: Notification, b: Notification) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       setNotifications(sorted);
     } catch (err: any) {
@@ -144,11 +144,10 @@ export default function NotificationsPage() {
             <button
               key={filter}
               onClick={() => setSelectedFilter(filter)}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                selectedFilter === filter
-                  ? 'text-indigo-600 border-b-2 border-indigo-600'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${selectedFilter === filter
+                ? 'text-indigo-600 border-b-2 border-indigo-600'
+                : 'text-gray-600 hover:text-gray-900'
+                }`}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
               {filter === 'unread' && unreadCount > 0 && (
@@ -178,9 +177,8 @@ export default function NotificationsPage() {
           {filteredNotifications.map((notification) => (
             <div
               key={notification.id}
-              className={`border-l-4 rounded-lg shadow-sm p-4 transition-all ${getNotificationColor(notification.type)} ${
-                !notification.is_read ? 'border-l-4' : 'opacity-75'
-              }`}
+              className={`border-l-4 rounded-lg shadow-sm p-4 transition-all ${getNotificationColor(notification.type)} ${!notification.is_read ? 'border-l-4' : 'opacity-75'
+                }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3 flex-1">

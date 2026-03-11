@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { quotesAPI, ordersAPI } from '@/lib/api';
-import { SkeletonCard } from '@/components/SkeletonLoaders';
+import { quotesAPI, ordersAPI, aiAPI } from '../../../lib/api';
+import { SkeletonCard } from '../../../components/SkeletonLoaders';
+import { SparklesIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 interface Quote {
   id: string;
@@ -21,13 +22,21 @@ interface Order {
   product_name: string;
 }
 
+interface AIPrediction {
+  order_id: string;
+  quote_id: string;
+  vendor: string;
+  success_probability: number;
+}
+
 export default function QuotesPage() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [predictions, setPredictions] = useState<AIPrediction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<string>('');
+  const [isNegotiating, setIsNegotiating] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     order_id: '',
     price: 0,
@@ -38,7 +47,30 @@ export default function QuotesPage() {
   useEffect(() => {
     fetchQuotes();
     fetchOrders();
+    fetchPredictions();
   }, []);
+
+  const fetchPredictions = async () => {
+    try {
+      const response = await aiAPI.getPredictions();
+      setPredictions(response.data);
+    } catch (err) {
+      console.warn('AI Predictions not available');
+    }
+  };
+
+  const handleAutoNegotiate = async (orderId: string) => {
+    try {
+      setIsNegotiating(orderId);
+      await quotesAPI.autoNegotiate(orderId);
+      alert('AI Negotiation sequence started for this order.');
+      fetchQuotes();
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to start AI negotiation');
+    } finally {
+      setIsNegotiating(null);
+    }
+  };
 
   const fetchQuotes = async () => {
     try {
@@ -184,64 +216,97 @@ export default function QuotesPage() {
       ) : (
         <div className="space-y-6">
           {Object.entries(groupedQuotes).map(([orderId, { order, quotes: orderQuotes }]) => (
-            <div key={orderId} className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">{order.product_name}</h2>
-              <div className="overflow-x-auto -mx-6 px-6">
-                <table className="w-full text-sm">
-                  <thead className="border-b">
-                    <tr>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-900">
-                        Vendor
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-900">
-                        Price
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-900">
-                        Delivery (days)
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-900">
-                        Status
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-900">
-                        Actions
-                      </th>
+            <div key={orderId} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xs uppercase">
+                    {order.product_name.charAt(0)}
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 uppercase tracking-tight">{order.product_name}</h2>
+                    <p className="text-[10px] text-gray-400 font-mono">ORDER REF: {orderId}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleAutoNegotiate(orderId)}
+                  disabled={isNegotiating === orderId}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all ${isNegotiating === orderId
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-100'
+                    }`}
+                >
+                  <SparklesIcon className={`w-4 h-4 ${isNegotiating === orderId ? 'animate-spin' : ''}`} />
+                  {isNegotiating === orderId ? 'Negotiating...' : 'AI Auto-Negotiate'}
+                </button>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-white border-b border-gray-50">
+                      <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Vendor</th>
+                      <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Quote Price</th>
+                      <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Delivery</th>
+                      <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">AI Success Prob</th>
+                      <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                      <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y">
-                    {orderQuotes.map((quote) => (
-                      <tr key={quote.id} className="hover:bg-gray-50">
-                        <td className="py-3 px-4">{quote.vendor_name || 'Unknown Vendor'}</td>
-                        <td className="py-3 px-4 font-semibold text-gray-900">
-                          ${quote.price.toFixed(2)}
-                        </td>
-                        <td className="py-3 px-4">{quote.delivery_days}</td>
-                        <td className="py-3 px-4">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(quote.status)}`}
-                          >
-                            {quote.status}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 space-x-2">
-                          {quote.status !== 'accepted' && (
-                            <button
-                              onClick={() => handleUpdateQuote(quote.id, 'accepted')}
-                              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs"
-                            >
-                              Accept
-                            </button>
-                          )}
-                          {quote.status !== 'rejected' && (
-                            <button
-                              onClick={() => handleUpdateQuote(quote.id, 'rejected')}
-                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs"
-                            >
-                              Reject
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                  <tbody className="divide-y divide-gray-50">
+                    {orderQuotes.map((quote: Quote) => {
+                      const prediction = predictions.find(p => p.quote_id === quote.id);
+                      return (
+                        <tr key={quote.id} className="hover:bg-gray-50/50 transition-colors group">
+                          <td className="px-6 py-4">
+                            <p className="text-sm font-bold text-gray-900 uppercase">{quote.vendor_name || 'Vendor Profile'}</p>
+                            <p className="text-[10px] text-gray-400">QUALIFIED PARTNER</p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-lg font-bold text-indigo-600 tracking-tighter">${quote.price.toLocaleString()}</span>
+                          </td>
+                          <td className="px-6 py-4 text-sm font-semibold text-gray-600">{quote.delivery_days} Days</td>
+                          <td className="px-6 py-4">
+                            {prediction ? (
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 max-w-[100px] h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full rounded-full transition-all ${prediction.success_probability > 0.7 ? 'bg-emerald-500' : 'bg-amber-500'
+                                      }`}
+                                    style={{ width: `${prediction.success_probability * 100}%` }}
+                                  />
+                                </div>
+                                <span className="text-xs font-bold text-gray-700">{Math.round(prediction.success_probability * 100)}%</span>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-gray-300 font-bold italic uppercase">Analyzing...</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${getStatusColor(quote.status)}`}>
+                              {quote.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right space-x-2">
+                            {quote.status !== 'accepted' && (
+                              <button
+                                onClick={() => handleUpdateQuote(quote.id, 'accepted')}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-tighter transition-colors"
+                              >
+                                Accept
+                              </button>
+                            )}
+                            {quote.status !== 'rejected' && (
+                              <button
+                                onClick={() => handleUpdateQuote(quote.id, 'rejected')}
+                                className="bg-white border border-gray-200 hover:border-red-500 hover:text-red-600 text-gray-400 py-1.5 px-3 rounded text-[10px] font-bold uppercase tracking-tighter transition-all"
+                              >
+                                Reject
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

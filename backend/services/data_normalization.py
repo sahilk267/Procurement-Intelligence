@@ -7,11 +7,12 @@ def normalize_vendor_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
     - Guesses category from unstructured text
     - Normalizes city/area
     """
+    # Clean and validate basic fields
     normalized = {
         "name": str(raw_data.get("name", "")).strip().title(),
-        "email": str(raw_data.get("email", "")).strip().lower(),
-        "phone": str(raw_data.get("phone", "")),
-        "website": str(raw_data.get("website", "")),
+        "email": str(raw_data.get("email", "")).strip().lower() or None,
+        "phone": str(raw_data.get("phone", "")).strip() or None,
+        "website": str(raw_data.get("website", "")).strip() or None,
         "discovery_source": raw_data.get("source", "web_scraper")
     }
     
@@ -24,7 +25,7 @@ def normalize_vendor_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
     else:
         normalized["category"] = raw_data.get("category", "General IT")
         
-    normalized["city"] = str(raw_data.get("city", "")).strip().title()
-    normalized["area"] = str(raw_data.get("area", "")).strip().title()
+    normalized["city"] = str(raw_data.get("city", "")).strip().title() or None
+    normalized["area"] = str(raw_data.get("area", "")).strip().title() or None
     
     return normalized

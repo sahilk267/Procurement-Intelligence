@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { analyticsAPI } from '@/lib/api';
-import { SkeletonMetricCard } from '@/components/SkeletonLoaders';
+import { analyticsAPI } from '../../../lib/api';
+import { SkeletonMetricCard } from '../../../components/SkeletonLoaders';
 import {
   LineChart,
   Line,

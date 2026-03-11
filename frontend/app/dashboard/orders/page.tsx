@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ordersAPI, vendorsAPI } from '@/lib/api';
-import { SkeletonTableRow } from '@/components/SkeletonLoaders';
+import { ordersAPI, vendorsAPI, aiAPI } from '../../../lib/api';
+import { SkeletonTableRow } from '../../../components/SkeletonLoaders';
 import { useSearchParams } from 'next/navigation';
+import { SparklesIcon, PlusIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
 
 interface Order {
   id: string;
@@ -13,6 +14,13 @@ interface Order {
   vendor_id: string;
   created_at: string;
   updated_at: string;
+}
+
+interface AIRecommendation {
+  order_id: string;
+  product: string;
+  best_quote_id: string;
+  analysis: string;
 }
 
 interface Vendor {
@@ -26,6 +34,7 @@ export default function OrdersPage() {
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(!!vendorParam);
@@ -176,16 +185,38 @@ export default function OrdersPage() {
         </form>
       )}
 
+      {/* AI Insights Section */}
+      {recommendations.length > 0 && (
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+          <div className="flex items-center gap-2 mb-4">
+            <SparklesIcon className="w-6 h-6" />
+            <h2 className="text-xl font-bold">AI Strategic Intelligence</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {recommendations.slice(0, 2).map((rec, idx) => (
+              <div key={idx} className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+                <p className="text-xs font-bold uppercase tracking-wider text-indigo-100 mb-1">
+                  Order #{rec.order_id} • {rec.product}
+                </p>
+                <p className="text-sm font-medium leading-relaxed">
+                  {rec.analysis}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {isLoading ? (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Product</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Qty</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Date</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Product</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Qty</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Date</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -196,58 +227,49 @@ export default function OrdersPage() {
           </table>
         </div>
       ) : orders.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <p className="text-gray-500 text-lg">No orders found</p>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-16 text-center">
+          <p className="text-gray-500 text-lg">No orders found in the system.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <table className="w-full border-collapse">
+            <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Product
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Quantity
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Created
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Actions
-                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Product</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Qty</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Created</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-gray-50">
               {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                    {order.product_name}
+                <tr key={order.id} className="hover:bg-gray-50/50 transition-colors group">
+                  <td className="px-6 py-4">
+                    <p className="text-sm font-bold text-gray-900 uppercase">{order.product_name}</p>
+                    <p className="text-[10px] text-gray-400 font-mono">ID: {order.id}</p>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{order.quantity}</td>
-                  <td className="px-6 py-4 text-sm">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
+                  <td className="px-6 py-4 text-sm font-semibold text-gray-600">{order.quantity} units</td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${getStatusColor(order.status)}`}>
                       {order.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
+                  <td className="px-6 py-4 text-sm text-gray-400 font-medium">
                     {new Date(order.created_at).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 text-sm space-x-2">
+                  <td className="px-6 py-4 text-right space-x-2">
                     {order.status === 'draft' && (
                       <button
                         onClick={() => handleSendRFQ(order.id)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-tighter transition-colors"
                       >
                         Send RFQ
                       </button>
                     )}
                     <button
                       onClick={() => handleDeleteOrder(order.id)}
-                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs"
+                      className="bg-white border border-gray-200 hover:border-red-500 hover:text-red-600 text-gray-400 py-1.5 px-3 rounded text-[10px] font-bold uppercase tracking-tighter transition-all"
                     >
                       Delete
                     </button>
@@ -258,6 +280,7 @@ export default function OrdersPage() {
           </table>
         </div>
       )}
+
     </div>
   );
 }

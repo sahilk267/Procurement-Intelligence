@@ -13,10 +13,30 @@ app = FastAPI(title="Procurement Intelligence Platform", version="1.0.0")
 @app.exception_handler(SQLAlchemyError)
 async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
     logging.error(f"Database error: {str(exc)}")
-    return JSONResponse(
+    response = JSONResponse(
         status_code=500,
         content={"detail": "A database error occurred. Internal security prevented schema exposure."},
     )
+    # Ensure CORS headers are present on error responses
+    origin = request.headers.get("origin")
+    if origin in settings.BACKEND_CORS_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    logging.error(f"Unhandled error: {str(exc)}", exc_info=True)
+    response = JSONResponse(
+        status_code=500,
+        content={"detail": str(exc)},
+    )
+    # Ensure CORS headers are present on error responses
+    origin = request.headers.get("origin")
+    if origin in settings.BACKEND_CORS_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
 
 # CORS middleware
 app.add_middleware(

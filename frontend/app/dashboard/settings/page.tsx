@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { fetchAuth } from "../../../lib/fetch";
+import { fetchAuth } from '../../../lib/fetch';
 
 export default function SettingsPage() {
     const [loading, setLoading] = useState(false);

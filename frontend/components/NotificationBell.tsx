@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { notificationsAPI } from '@/lib/api';
+import { notificationsAPI } from '../lib/api';
 
 export function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);

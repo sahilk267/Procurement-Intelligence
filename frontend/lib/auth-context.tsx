@@ -4,11 +4,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { authAPI } from './api';
 
 export interface User {
-  id: string;
+  id: string | number;
   email: string;
-  full_name: string;
+  name: string;
   role: string;
-  is_verified: boolean;
   created_at: string;
 }
 
@@ -41,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } catch (err: any) {
           localStorage.removeItem('token');
           setUser(null);
-          setError(err.response?.data?.detail || 'Authentication failed');
+          setError(String(err.response?.data?.detail || 'Authentication failed'));
         }
       }
       setIsLoading(false);
@@ -59,9 +58,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('token', access_token);
       setUser(userData);
     } catch (err: any) {
-      const message = err.response?.data?.detail || 'Login failed';
-      setError(message);
-      throw new Error(message);
+      const detail = err.response?.data?.detail;
+      const message = typeof detail === 'string' ? detail :
+        (detail && typeof detail === 'object' ? JSON.stringify(detail) :
+          (err.message || 'Login failed'));
+      setError(String(message));
+      throw new Error(String(message));
     } finally {
       setIsLoading(false);
     }
@@ -74,13 +76,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await authAPI.register({
         email,
         password,
-        full_name: fullName,
+        name: fullName,
       });
       const { access_token, user: userData } = response.data;
       localStorage.setItem('token', access_token);
       setUser(userData);
     } catch (err: any) {
-      const message = err.response?.data?.detail || 'Registration failed';
+      const message = String(err.response?.data?.detail || 'Registration failed');
       setError(message);
       throw new Error(message);
     } finally {

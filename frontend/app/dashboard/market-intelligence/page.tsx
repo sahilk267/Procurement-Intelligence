@@ -1,7 +1,7 @@
-"useায়ন client";
+"use client";
 
 import { useEffect, useState } from "react";
-import { fetchAuth } from "../../../lib/fetch";
+import { fetchAuth } from '../../../lib/fetch';
 
 export default function MarketIntelligence() {
     const [opportunities, setOpportunities] = useState<any[]>([]);

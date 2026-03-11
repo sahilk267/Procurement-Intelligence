@@ -9,8 +9,8 @@ from services.duplicate_detection import find_duplicate_vendor
 
 MOCK_VENDORS = [
     {"name": "Elite IT Supplies", "city": "Mumbai", "area": "Lamington Road", "description": "We sell Cisco switches and networking gear", "source": "IndiaMART", "phone": "+91-98765-43210", "email": "contact@eliteit.com"},
-    {"name": "Lamington Hardware Hub", "city": "Mumbai", "area": "Lamington Road", "description": "Best servers from Dell and HP", "source": "JustDial", "phone": "99 88 77 66 55"},
-    {"name": "TechPro Distributors", "city": "Delhi", "area": "Nehru Place", "description": "Desktops and laptops", "source": "Google Maps", "phone": "11-22334455"},
+    {"name": "Lamington Hardware Hub", "city": "Mumbai", "area": "Lamington Road", "description": "Best servers from Dell and HP", "source": "JustDial", "phone": "99 88 77 66 55", "email": "info@lamingtonhub.in"},
+    {"name": "TechPro Distributors", "city": "Delhi", "area": "Nehru Place", "description": "Desktops and laptops", "source": "Google Maps", "phone": "11-22334455", "email": "sales@techpro.com"},
 ]
 
 @celery_app.task(name="workers.vendor_discovery.discover_vendors_task")

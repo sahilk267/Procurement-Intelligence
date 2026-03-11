@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchAuth } from "../../../lib/fetch";
+import { fetchAuth } from '../../../lib/fetch';
 
 export default function AIBrainDashboard() {
     const [insights, setInsights] = useState("");
