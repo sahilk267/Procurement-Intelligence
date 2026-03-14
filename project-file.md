@@ -44,131 +44,51 @@ Authentication
 Vendor database
 Vendor intelligence
 
-Modules:
+# 2️⃣ Complete Development Roadmap (Updated)
 
-* Auth service
-* Vendor service
-* Admin dashboard
-* Vendor verification system
+## Phase 1: Foundation & Architecture
+- Modular backend/frontend structure
+- Core infrastructure (env, Docker, CI/CD)
+- Architecture documentation
 
-Deliverables:
+## Phase 2: Core API & Authentication
+- REST APIs for procurement actions
+- JWT auth, RBAC
+- OpenAPI docs, unit tests
 
-✔ vendor database
-✔ vendor filtering
-✔ fraud score basics
+## Phase 3: Data Ingestion & Integration
+- Pipelines for CSV, Excel, API data
+- Deduplication, validation, scheduled syncs
 
+## Phase 4: Procurement Workflow Automation
+- Demand, RFQ, supplier comparison, negotiation, PO, delivery, invoice, payment
+- Status tracking, notifications, audit
 
-## Phase 2 — Procurement Workflow
+## Phase 5: Analytics, Intelligence & AI
+- Supplier risk scoring, price benchmarking, spend analytics
+- AI for opportunity/fraud detection, negotiation
+- Vector DB, RAG pipelines, dashboards
 
-Goal:
+## Phase 6: UI/UX & User Portal
+- Dashboards for buyers, suppliers, admins
+- Supplier insights, procurement KPIs, analytics
+- User management, responsive design
 
-order posting
-RFQ automation
-quote management
-deal workflow
+## Phase 7: External Integrations & Data Sources
+- Alibaba, IndiaMART, commodity/shipping/inflation APIs
+- Data normalization, periodic refresh
 
-Modules:
+## Phase 8: Security, Compliance & Production Hardening
+- SSO, 2FA, audit logs, secrets management
+- WAF, monitoring, GDPR/SOC2, backups, scaling
 
-* Order service
-* RFQ service
-* Quote service
-* Notification system
+## Phase 9: Testing, QA & Documentation
+- End-to-end, integration, load tests
+- Code reviews, security audits, docs, user feedback
 
-Deliverables:
-
-✔ RFQ broadcasting
-✔ vendor quote collection
-✔ deal comparison
-
-
-## Phase 3 — Vendor Discovery & Market Intelligence
-
-Goal:
-
-automatic vendor discovery
-price monitoring
-market opportunity detection
-
-Modules:
-
-* Vendor crawler
-* Price intelligence
-* Opportunity engine
-
-Deliverables:
-
-✔ new vendor discovery
-✔ price alerts
-✔ liquidation detection
-
-
-## Phase 4 — Lead Generation System
-
-Goal:
-
-buyer discovery
-social automation
-lead CRM
-
-Modules:
-
-* Lead service
-* Social automation
-* CRM pipeline
-
-Deliverables:
-
-✔ automated buyer discovery
-✔ lead tracking
-
-
-## Phase 5 — Business Intelligence Analytics
-
-Goal:
-
-data analytics
-performance insights
-decision dashboards
-
-Modules:
-
-* BI analytics service
-* reporting engine
-* chart dashboards
-
-Deliverables:
-
-✔ vendor analytics
-✔ deal analytics
-✔ market analytics
-
-
-## Phase 6 — AI Advisor
-
-Goal:
-
-system self-improvement
-decision assistance
-
-Modules:
-
-* fraud detection AI
-* vendor ranking AI
-* deal prediction AI
-
-Deliverables:
-
-✔ automated recommendations
-✔ risk alerts
-✔ **Production Hardening & Functional Parity** (100% Complete)
-
-
-# 3️⃣ GitHub Project Structure
-
-Repository:
-
-procurement-intelligence-platform
-
+## Phase 10: Launch, Feedback & Continuous Improvement
+- Deploy to production, onboard users, gather feedback
+- Prioritize improvements, plan new features
 Structure:
 
 procurement-intelligence-platform/
