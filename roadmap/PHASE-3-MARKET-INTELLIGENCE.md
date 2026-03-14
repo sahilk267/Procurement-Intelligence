@@ -1,6 +1,6 @@
 # Phase 3: Proactive Market Intelligence & Outbound Sales
 
-## 3.1 Market Demand & Opportunity Detection
+## 3.1 Market Demand, Product, and Opportunity Detection
 - Scrape B2B forums, social media, price APIs for trending products, price drops, bulk clearances
 - Integrate with paid APIs and industry reports for deeper intelligence
 - Implement real-time alerting for sudden market changes
@@ -8,12 +8,13 @@
 - Score data sources for reliability
 - Use ML to predict high-demand products and regions
 - Validate detected opportunities to reduce false positives
-- Conduct legal review for market data collection and privacy per region (GDPR, DPDP, CCPA, etc.)
+- Conduct legal review for market data collection and privacy per region (GDPR, DPDP, CCPA, PCI DSS)
 - Add multi-language support for market data and analytics
 - Track competitor marketing campaigns and messaging for market intelligence
+- Ingest and analyze B2C product trends, reviews, and pricing
 
-## 3.2 Outbound Sales Automation
-- Auto-generate product offers for clients based on detected opportunities
+## 3.2 Outbound Sales & Marketing Automation
+- Auto-generate product offers for clients based on detected opportunities (B2B/B2C)
 - Targeted outreach: email/WhatsApp campaigns to likely buyers
 - Implement A/B testing of outreach messages
 - Add automated lead scoring/prioritization
@@ -34,6 +35,7 @@
 - Segment leads/contacts for marketing campaigns (not just sales) based on behavior, demographics, and engagement
 - Integrate with ad platforms (Google Ads, LinkedIn Ads) for automated campaign launches
 - Track and analyze the full marketing funnel (awareness, engagement, conversion)
+- Personalize marketing and product recommendations for B2C
 
 ## 3.3 Audit Logging & Compliance
 - Log all campaign and opportunity actions for audit/compliance
@@ -70,6 +72,8 @@
 - Automated marketing segmentation engine
 - Ad platform integration modules
 - Marketing funnel analytics dashboard
+- B2C product trend analytics
+- Personalized marketing engine (B2C)
 
 ## Checklist
 - [ ] Real-time market alerting
@@ -100,3 +104,5 @@
 - [ ] Automated marketing segmentation
 - [ ] Ad platform integration
 - [ ] Marketing funnel analytics
+- [ ] B2C product trend analytics
+- [ ] Personalized marketing (B2C)

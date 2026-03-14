@@ -1,40 +1,30 @@
 # Procurement Intelligence Platform
 
-An AI-powered procurement intelligence platform that automates vendor discovery, RFQ broadcasting, quote comparison, and deal closing.
+An AI-powered B2B+B2C commerce platform for automated vendor discovery, product catalog, RFQ broadcasting, quote comparison, negotiation, checkout, and deal closing.
 
 ## 📊 Project Status
 
-**Overall Progress:** 100% (Complete)
-
 | Phase | Module | Status | Completion |
 |-------|--------|--------|------------|
-| 1 | 🏗️ Infrastructure | ✅ Complete | 100% |
-| 2 | 🔌 Backend API | ✅ Complete | 100% |
-| 3 | 🎨 Frontend Dashboard | ✅ Complete | 100% |
-| 4 | ⚙️ Worker Implementation | ✅ Complete | 100% |
-| 5 | 🤖 AI Engines | ✅ Complete | 100% |
-| 6 | 🔗 Integration & Testing | ✅ Complete | 100% |
-| 7 | 🚀 Production Hardening | ✅ Complete | 100% |
+| 1 | 🏗️ Data Foundation & Self-Building Network (B2B+B2C) | ⏳ In Progress | 0% |
+| 2 | 🔌 Order Automation & Smart Deal Engine (B2B+B2C) | ⏳ In Progress | 0% |
+| 3 | 🎯 Market Intelligence & Outbound Sales (B2B+B2C) | ⏳ In Progress | 0% |
+| 4 | 📈 Analytics & Continuous Improvement (B2B+B2C) | ⏳ In Progress | 0% |
+| 5 | 🤖 Advanced Automation/AI Modules (B2B+B2C) | ⏳ In Progress | 0% |
+| 6 | 🛡️ Security, Compliance, and Production Hardening (B2B+B2C) | ⏳ In Progress | 0% |
 
-**Latest Update:** Successfully deployed full-stack Dockerized environment. Authentication stabilized, database schema applied, and frontend-backend synchronization verified. Project ready for production use. (Phase 15) and Optimized Docker Orchestration (Phase 16) successfully deployed with Next.js Standalone mode for minimum footprint.
-
-See [walkthrough.md](C:\Users\Aziz\.gemini\antigravity\brain\7b2448ed-778b-4326-b83d-6d54eea1719b\walkthrough.md) for full delivery details.
+**Latest Update:** Roadmap and tracking updated for unified B2B+B2C commerce, automation, and AI. See `roadmap/` for detailed phase-wise plans.
 
 ## Features
 
-- **Vendor Intelligence System**: Automated vendor discovery, verification, and AI-based fraud scoring.
-- **RFQ Automation Engine**: Intelligent vendor selection and bulk quote broadcasting.
-- **Market Price Intelligence**: Historical trend analysis and automated market opportunity detection.
-- **Automated Negotiation Log**: Database-backed audit trails for every price counter-offer and negotiation round.
-- **Deal Closing Engine**: AI-powered success prediction and strategic profit optimization.
-- **Procurement AI Brain**: Centralized intelligence for recommendations and executive decision support.
-- **Analytics Dashboard**: High-performance business intelligence with real-time data aggregation.
-
-### 🛡️ Production Hardening (Phases 10-13)
-- **Security**: Centralized environment isolation, restricted CORS policies, and sanitized database error shielding.
-- **Performance**: ~100x increase in analytics speed via Bulk SQL Aggregations and strategic database indexing.
-- **Architecture**: Standardized non-circular import patterns and unified MetaData for stable database migrations.
-- **Reliability**: 100% test coverage for core API flows verified on a clean-slate SQLite integration environment.
+- **Vendor & Product Intelligence**: Automated vendor discovery, product catalog ingestion, and AI-based fraud scoring.
+- **RFQ & Cart Automation**: Intelligent vendor selection, bulk quote broadcasting, and B2C shopping cart/checkout.
+- **Market & Price Intelligence**: Historical trend analysis, product analytics, and automated market opportunity detection.
+- **Negotiation & Deal Engine**: AI-powered negotiation, audit trails, and strategic profit optimization.
+- **Customer & Relationship Management**: CRM dashboard, customer account management, and lifecycle tracking.
+- **Personalized Marketing**: Automated campaigns, segmentation, and product recommendations.
+- **Analytics Dashboard**: Real-time business intelligence for sales, product, and customer analytics.
+- **Security & Compliance**: Zero trust, DLP, payment security, fraud detection, and privacy compliance.
 
 ## Tech Stack
 
@@ -58,38 +48,14 @@ See [walkthrough.md](C:\Users\Aziz\.gemini\antigravity\brain\7b2448ed-778b-4326-
 
 ```
 Procurement-Intelligence/
-├── frontend/                 # Next.js frontend
-│   ├── dashboard/
-│   ├── vendors/
-│   ├── orders/
-│   ├── quotes/
-│   └── analytics/
-├── backend/                  # FastAPI backend
-│   ├── api/
-│   ├── services/
-│   ├── models/
-│   └── routes/
-├── workers/                  # Background workers
-│   ├── vendor_discovery_worker/
-│   ├── price_monitor_worker/
-│   ├── lead_scraper_worker/
-│   └── rfq_worker/
-├── ai_engines/               # AI/ML engines
-│   ├── fraud_detection/
-│   ├── vendor_ranking/
-│   ├── opportunity_detection/
-│   └── deal_prediction/
+├── frontend/                 # Next.js frontend (dashboard, vendors, orders, quotes, analytics)
+├── backend/                  # FastAPI backend (api, services, models, routes)
+├── workers/                  # Celery background workers (vendor discovery, price monitor, lead scraper, rfq)
+├── ai_engines/               # AI/ML engines (fraud detection, vendor ranking, opportunity detection, deal prediction)
 ├── database/                 # Database schemas and migrations
-│   ├── migrations/
-│   └── schema.sql
 ├── infrastructure/           # Docker and deployment configs
-│   ├── docker/
-│   └── docker-compose.yml
-└── project-management/       # Project planning and tracking
-    ├── integration-plan.md   # Phase-wise implementation plan
-    ├── progress-tracking.json # Progress tracking data
-    ├── progress_tracker.py   # Progress update script
-    └── progress_dashboard.py # Dashboard generator
+├── project-management/       # Project planning and tracking
+└── roadmap/                  # Phase-wise B2B+B2C implementation plan and tracking
 ```
 
 ## Quick Start
@@ -99,57 +65,43 @@ Procurement-Intelligence/
    git clone <repository-url>
    cd Procurement-Intelligence
    ```
-
 2. **Start the services**
    ```bash
    cd infrastructure
    docker-compose up --build
    ```
-
 3. **Access the application**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8000
    - API Docs: http://localhost:8000/docs
 
-## API Endpoints
+## API Endpoints (Sample)
 
 ### Authentication
 - `POST /api/v1/auth/register` - User registration
 - `POST /api/v1/auth/login` - User login
 - `GET /api/v1/auth/profile` - Get user profile
 
-### Vendors
+### Vendors & Products
 - `POST /api/v1/vendors` - Create vendor
 - `GET /api/v1/vendors` - List vendors
-- `GET /api/v1/vendors/{id}` - Get vendor details
-- `PUT /api/v1/vendors/{id}` - Update vendor
-- `DELETE /api/v1/vendors/{id}` - Delete vendor
+- `POST /api/v1/products` - Create product (B2C)
+- `GET /api/v1/products` - List products (B2C)
 
-### Orders
+### Orders & Cart
 - `POST /api/v1/orders` - Create order
 - `GET /api/v1/orders` - List orders
-- `GET /api/v1/orders/{id}` - Get order details
-- `PUT /api/v1/orders/{id}` - Update order
-- `DELETE /api/v1/orders/{id}` - Delete order
-- `POST /api/v1/orders/{id}/send-rfq` - Send RFQ
+- `POST /api/v1/cart` - Add to cart (B2C)
+- `POST /api/v1/checkout` - Checkout (B2C)
 
-### Quotes
+### Quotes & RFQ
 - `POST /api/v1/quotes` - Submit quote
-- `GET /api/v1/quotes` - List quotes
-- `PUT /api/v1/quotes/{id}` - Update quote
+- `POST /api/v1/orders/{id}/send-rfq` - Send RFQ (B2B)
 
-### Analytics & Intelligence
+### Analytics & AI
 - `GET /api/v1/analytics/vendors` - Vendor analytics
-- `GET /api/v1/analytics/deals` - Deal analytics
-- `GET /api/v1/analytics/prices` - Price analytics
-- `GET /api/v1/analytics/leads` - Lead analytics
-- `GET /api/v1/analytics/vendor-rankings` - AI vendor rankings
-- `GET /api/v1/analytics/advisor-insights` - AI strategic insights
-- `GET /api/v1/prices/history` - Price movement trends
-- `GET /api/v1/prices/average` - Category price benchmarks
-- `GET /api/v1/prices/opportunities` - High-margin market signals
-- `GET /api/v1/ai/recommendations` - Executive AI recommendations
-- `GET /api/v1/ai/predictions` - AI deal outcome predictions
+- `GET /api/v1/analytics/products` - Product analytics (B2C)
+- `GET /api/v1/ai/recommendations` - AI recommendations
 
 ## Development
 
@@ -168,82 +120,22 @@ npm run dev
 ```
 
 ### Database
-The database schema is defined in `database/schema.sql`. Use migrations for schema changes.
+- The schema is defined in `database/schema.sql`. Use migrations for changes.
 
-## Workers
-
-Background workers are implemented using Celery:
-
-- **Vendor Discovery Worker**: Scrapes vendor data from marketplaces
-- **Price Monitor Worker**: Monitors price changes and opportunities
-- **Lead Scraper Worker**: Discovers potential leads
-- **RFQ Worker**: Handles RFQ broadcasting and follow-ups
-
-## AI Engines
-
-AI/ML components for intelligent decision making:
-
-- **Fraud Detection**: Evaluates vendor authenticity
-- **Vendor Ranking**: Ranks vendors by reliability
-- **Opportunity Detection**: Identifies market opportunities
-- **Deal Prediction**: Predicts deal success probability
+## Workers & AI Engines
+- **Vendor Discovery Worker**: Scrapes vendor data
+- **Price Monitor Worker**: Monitors price changes
+- **Lead Scraper Worker**: Discovers leads
+- **RFQ Worker**: Handles RFQ broadcasting
+- **AI Engines**: Fraud detection, vendor ranking, opportunity detection, deal prediction
 
 ## Deployment
-
-### Local Development
-Use Docker Compose for local development with all services.
-
-### Production
-Deploy to Kubernetes with proper scaling and monitoring.
+- **Local**: Use Docker Compose for all services
+- **Production**: Deploy to Kubernetes with scaling and monitoring
 
 ## Project Management
-
-The project follows a structured phased approach with comprehensive progress tracking.
-
-### Integration Plan
-See `project-management/integration-plan.md` for detailed phase-wise implementation plan including:
-- 7 development phases with clear objectives
-- Task breakdowns and dependencies
-- Timeline estimates and success criteria
-- Risk management strategies
-
-### Progress Tracking
-- **Progress File**: `project-management/progress-tracking.json` - JSON-based progress data
-- **Update Script**: `project-management/progress_tracker.py` - Command-line tool to update progress
-- **Dashboard**: `project-management/progress_dashboard.py` - Generates visual HTML dashboard
-
-### Usage Examples
-
-```bash
-# Generate progress report
-cd project-management
-python progress_tracker.py report
-
-# Update task status
-python progress_tracker.py update-task phase_2 api_testing completed "All tests passing"
-
-# Update phase progress
-python progress_tracker.py update-phase phase_3 in_progress 25
-
-# Generate visual dashboard
-python progress_dashboard.py
-
-# View upcoming tasks
-python progress_tracker.py upcoming
-```
-
-### Current Status
-- **Phase 1 (Infrastructure)**: ✅ Completed
-- **Phase 2 (Core Backend API)**: ✅ Completed
-- **Phase 3 (Frontend Dashboard)**: ✅ Completed
-- **Phase 4 (Worker Implementation)**: ✅ Completed
-- **Phase 5 (AI Engines)**: ✅ Completed
-- **Phase 6 (Integration & Testing)**: ✅ Completed
-- **Phase 7-13 (Production Hardening & Final Parity)**: ✅ Completed
-- **Overall Progress**: 100% complete - **Production Ready**
-
-View the [Progress Dashboard](project-management/progress-dashboard.html) for visual progress tracking.
+- See `roadmap/` for phase-wise B2B+B2C plan and tracking
+- See `project-management/` for integration plan, progress tracking, and dashboard
 
 ## License
-
-This project is licensed under the MIT License.
+MIT License

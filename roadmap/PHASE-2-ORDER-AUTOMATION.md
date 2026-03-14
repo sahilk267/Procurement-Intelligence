@@ -1,20 +1,22 @@
 # Phase 2: Order Automation & Smart Deal Engine
 
-## 2.1 RFQ Broadcast & Quote Collection
-- On order creation, auto-broadcast RFQ to matching vendors (email, WhatsApp, LinkedIn)
+## 2.1 RFQ, Cart, and Order Broadcast & Quote Collection
+- On order creation, auto-broadcast RFQ to matching vendors (B2B)
+- Enable shopping cart and checkout workflows for B2C
 - Implement rate limiting/throttling to avoid spam/blacklisting
-- Deduplicate vendors across all channels to avoid double-RFQ
+- Deduplicate vendors and products across all channels to avoid double-RFQ or duplicate orders
 - Track delivery/failure of RFQs and vendor response analytics (open/reply rates)
 - Parse unstructured replies (PDF, email text, etc.) and auto-match quotes to orders/vendors
 - Respect vendor blacklist/opt-out across all channels
 - Notify sales reps of hot leads, new quotes, or negotiation status in real time
-- Conduct legal review for RFQ and quote handling per region (GDPR, DPDP, CCPA, etc.)
-- Add multi-language support for RFQ and quote communications
-- Trigger nurture or re-engagement marketing campaigns for lost/expired quotes
+- Conduct legal review for RFQ, quote, and order handling per region (GDPR, DPDP, CCPA, PCI DSS)
+- Add multi-language support for RFQ, quote, and order communications
+- Trigger nurture or re-engagement marketing campaigns for lost/expired quotes or abandoned carts (B2C)
 - Integrate with marketing automation platforms to send targeted campaigns based on order/quote status
+- Enable product reservation and inventory checks for B2C orders
 
-## 2.2 AI-Powered Negotiation
-- Implement negotiation engine: auto-counter-offers, vendor response analytics, escalation logic
+## 2.2 AI-Powered Negotiation & Checkout
+- Implement negotiation engine: auto-counter-offers, vendor response analytics, escalation logic (B2B)
 - Add dynamic negotiation strategies based on vendor history
 - Provide human-in-the-loop option for high-value deals
 - Log all negotiation rounds for analytics
@@ -24,13 +26,16 @@
 - Maintain AI model governance (versioning, approval, rollback) for negotiation engine
 - Implement escalation playbook for failed negotiations or order issues
 - Trigger marketing campaigns for upsell/cross-sell based on negotiation outcomes
+- Enable coupon, promotion, and loyalty logic for B2C checkout
+- Integrate payment gateway for B2C checkout (Stripe, Razorpay, etc.)
+- Support multi-currency and tax compliance for international orders
 
-## 2.3 Deal Closing & Fulfillment
-- Auto-select best quote (price, reliability, delivery)
-- Trigger order confirmation, vendor notification, and client update
-- Integrate e-invoicing and payment reminders
+## 2.3 Deal Closing, Fulfillment & Payment
+- Auto-select best quote (price, reliability, delivery) for B2B
+- Trigger order confirmation, vendor notification, and client/customer update
+- Integrate e-invoicing and payment reminders (B2B)
 - Integrate with logistics/shipping APIs for fulfillment
-- Collect post-deal feedback from vendors/clients
+- Collect post-deal feedback from vendors/clients/customers
 - Validate authenticity of quotes (detect fake/duplicate quotes)
 - Implement order/quote versioning for audit and rollback
 - Add automated escalation if no vendor responds (expand search, notify admin)
@@ -38,12 +43,13 @@
 - Integrate with invoicing, payment, and ERP systems for full quote-to-cash automation
 - Automate customer updates on order status, shipment, and delivery
 - Capture win/loss reasons for every deal for sales improvement
-- Add multi-currency and tax compliance support for international orders
 - Integrate with marketing analytics to track campaign ROI and order/quote conversion
+- Enable order tracking and fulfillment notifications for B2C
 
 ## Deliverables
-- RFQ automation scripts
-- Negotiation engine
+- RFQ automation scripts (B2B)
+- Shopping cart and checkout modules (B2C)
+- Negotiation engine (B2B)
 - Deal closing workflow
 - Fulfillment notification system
 - Anti-spam/rate limiting logic
@@ -73,9 +79,13 @@
 - Marketing automation platform integration
 - Marketing analytics integration
 - Campaign ROI tracking
+- Payment gateway integration (B2C)
+- Coupon/promotion/loyalty modules (B2C)
+- Order tracking and fulfillment (B2C)
 
 ## Checklist
-- [ ] RFQ rate limiting implemented
+- [ ] RFQ rate limiting implemented (B2B)
+- [ ] Shopping cart and checkout (B2C)
 - [ ] RFQ delivery/failure tracking
 - [ ] Vendor response analytics
 - [ ] Unstructured quote parsing
@@ -106,3 +116,6 @@
 - [ ] Marketing automation platform integration
 - [ ] Marketing analytics integration
 - [ ] Campaign ROI tracking
+- [ ] Payment gateway integration (B2C)
+- [ ] Coupon/promotion/loyalty (B2C)
+- [ ] Order tracking and fulfillment (B2C)

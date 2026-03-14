@@ -1,9 +1,10 @@
 # Phase 1: Data Foundation & Self-Building Network
 
-## 1.1 Vendor/Client Auto-Discovery
+## 1.1 Vendor/Client & Product Auto-Discovery
 - Integrate web scraping, LinkedIn, IndiaMART, Google Maps APIs for vendor/client data
-- Implement data deduplication logic to avoid duplicate vendors/clients
-- Add data validation/cleaning for quality assurance
+- Integrate product catalog ingestion from suppliers, brands, and external feeds (for B2C)
+- Implement data deduplication logic to avoid duplicate vendors/clients/products
+- Add data validation/cleaning for quality assurance (vendors, products, customers)
 - Schedule periodic enrichment and refresh (define frequency, e.g., daily/weekly) via Celery workers
 - Handle anti-bot/captcha and legal compliance for all data sources
 - Monitor data sources for structural/API changes and auto-alert on failures
@@ -14,8 +15,9 @@
 - Segment leads/contacts by region, size, and product interest for targeted sales
 - Attribute each lead/contact to its original source/channel (web, ad, event, referral, etc.)
 - Enrich leads/contacts with marketing intent/signals (web visits, downloads, campaign engagement)
+- Ingest and normalize product data for B2C catalog (attributes, images, pricing, inventory)
 
-## 1.2 Relationship Management Automation
+## 1.2 Relationship & Customer Management Automation
 - Auto-send introduction emails/WhatsApp to new vendors/clients
 - Track engagement, auto-update relationship status, and communication history (emails, WhatsApp, calls)
 - Build a CRM dashboard for relationship analytics
@@ -28,20 +30,24 @@
 - Track and manage explicit marketing consent (opt-in/out for marketing communications)
 - Integrate with marketing automation platforms (Mailchimp, Marketo, HubSpot) for nurture campaigns
 - Trigger nurture or re-engagement campaigns for cold/lost leads
+- Implement customer account creation and management (B2C)
+- Track customer engagement, preferences, and lifecycle (B2C)
 
 ## 1.3 Categorization Feedback & Correction
 - Add feedback loop for improving categorization accuracy
 - Provide admin UI for manual override/corrections
 - Implement escalation playbook for unresolved data/categorization issues
 - Integrate with marketing analytics to track lead journey and campaign effectiveness
+- Enable product categorization and enrichment feedback (B2C)
 
 ## 1.4 Audit Logging & Compliance
 - Log all data changes and enrichment actions for audit/compliance
 - Generate automated compliance reports as needed
 - Maintain governance records for data source approvals, legal reviews, and compliance status
+- Track consent and privacy preferences for all users (B2B/B2C)
 
 ## Deliverables
-- Automated data ingestion scripts
+- Automated data ingestion scripts (vendors, products, customers)
 - Categorization ML model
 - CRM dashboard MVP
 - Relationship status tracking
@@ -68,9 +74,11 @@
 - Marketing automation platform integration
 - Nurture/re-engagement campaign triggers
 - Marketing analytics integration
+- Product catalog ingestion and normalization (B2C)
+- Customer account management module (B2C)
 
 ## Checklist
-- [ ] Data deduplication implemented
+- [ ] Data deduplication implemented (vendors, products, customers)
 - [ ] Data validation/cleaning scripts
 - [ ] Periodic enrichment scheduling
 - [ ] Anti-bot/captcha handling
@@ -103,3 +111,5 @@
 - [ ] Marketing automation platform integration
 - [ ] Nurture/re-engagement campaign triggers
 - [ ] Marketing analytics integration
+- [ ] Product catalog ingestion (B2C)
+- [ ] Customer account management (B2C)
